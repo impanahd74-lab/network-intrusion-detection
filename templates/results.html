@@ -1,0 +1,111 @@
+{% extends "base.html" %}
+{% block title %}Model Results{% endblock %}
+
+{% block content %}
+  <section class="row g-4">
+    <div class="col-lg-6">
+      <div class="card h-100">
+        <div class="card-body">
+          <h2 class="card-title">Training Overview</h2>
+          {% if metrics %}
+            <p>
+              <strong>Best model:</strong> {{ metrics.best_model }}<br />
+              <strong>Target column:</strong> {{ metrics.target_column }}<br />
+              <strong>Last trained:</strong> {{ metrics.trained_at }}
+            </p>
+          {% else %}
+            <p class="text-muted">No training metrics available yet.</p>
+          {% endif %}
+          <canvas id="metricsChart" width="400" height="300"></canvas>
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-6">
+      <div class="card h-100">
+        <div class="card-body">
+          <h2 class="card-title">Prediction Summary</h2>
+          {% if prediction_summary %}
+            <p>
+              <strong>Predicted at:</strong> {{ prediction_summary.predicted_at }}<br />
+              <strong>Total rows:</strong> {{ prediction_summary.total_predictions }}
+            </p>
+          {% else %}
+            <p class="text-muted">Upload a dataset to generate predictions.</p>
+          {% endif %}
+          <canvas id="predictionChart" width="400" height="300"></canvas>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="row g-4 mt-1">
+    <div class="col-12">
+      <div class="card">
+        <div class="card-body">
+          <h2 class="card-title">Model Metrics</h2>
+          {% if metrics %}
+            {% set models = metrics.models %}
+            <div class="table-responsive">
+              <table class="table table-striped">
+                <thead>
+                  <tr>
+                    <th scope="col">Model</th>
+                    <th scope="col">Accuracy</th>
+                    <th scope="col">Precision</th>
+                    <th scope="col">Recall</th>
+                    <th scope="col">F1 Score</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for name, values in models.items() %}
+                    <tr>
+                      <th scope="row">{{ name }}</th>
+                      <td>{{ '%.3f'|format(values.accuracy) }}</td>
+                      <td>{{ '%.3f'|format(values.precision) }}</td>
+                      <td>{{ '%.3f'|format(values.recall) }}</td>
+                      <td>{{ '%.3f'|format(values.f1) }}</td>
+                    </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          {% else %}
+            <p class="text-muted">Train a dataset to populate the metrics table.</p>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {% if prediction_summary and prediction_summary.sample %}
+    <section class="row g-4 mt-1">
+      <div class="col-12">
+        <div class="card">
+          <div class="card-body">
+            <h2 class="card-title">Sample of Prediction Input</h2>
+            <div class="table-responsive">
+              <table class="table table-striped">
+                <thead>
+                  <tr>
+                    {% for column in prediction_summary.sample[0].keys() %}
+                      <th scope="col">{{ column }}</th>
+                    {% endfor %}
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for row in prediction_summary.sample %}
+                    <tr>
+                      {% for value in row.values() %}
+                        <td>{{ value }}</td>
+                      {% endfor %}
+                    </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  {% endif %}
+{% endblock %}

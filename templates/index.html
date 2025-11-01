@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+{% block title %}NIDS Trainer{% endblock %}
+
+{% block content %}
+  <section class="row g-4">
+    <div class="col-lg-6">
+      <div class="card h-100">
+        <div class="card-body">
+          <h2 class="card-title">Train Models</h2>
+          <p class="card-text">
+            Upload a labeled CSV dataset. The last column is treated as the target label, while the
+            remaining columns are considered features. Categorical features are one-hot encoded and
+            numeric features are standardized before training four baseline classifiers.
+          </p>
+          <form action="{{ url_for('train') }}" method="post" enctype="multipart/form-data">
+            <div class="mb-3">
+              <label for="train_file" class="form-label">Training dataset (CSV only, &lt; 50&nbsp;MB)</label>
+              <input class="form-control" type="file" id="train_file" name="train_file" accept=".csv" required />
+            </div>
+            <button class="btn btn-primary" type="submit">Train Models</button>
+          </form>
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-6">
+      <div class="card h-100">
+        <div class="card-body">
+          <h2 class="card-title">Latest Results</h2>
+          {% if metrics %}
+            <p>
+              <strong>Best model:</strong> {{ metrics.best_model }}<br />
+              <strong>Target column:</strong> {{ metrics.target_column }}<br />
+              <strong>Trained at:</strong> {{ metrics.trained_at }}
+            </p>
+            <a class="btn btn-outline-primary" href="{{ url_for('results') }}">View details</a>
+          {% else %}
+            <p class="text-muted">No training run recorded yet.</p>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="row g-4 mt-1">
+    <div class="col-12">
+      <div class="card">
+        <div class="card-body">
+          <h2 class="card-title">Predict with the Selected Model</h2>
+          <p class="card-text">
+            After training, upload a CSV file containing the same feature columns (without the label
+            column). The best-performing model is used to generate predictions and summary counts for
+            quick inspection.
+          </p>
+          <form action="{{ url_for('predict') }}" method="post" enctype="multipart/form-data">
+            <div class="row g-2 align-items-center">
+              <div class="col-md-8">
+                <input class="form-control" type="file" id="predict_file" name="predict_file" accept=".csv" required />
+              </div>
+              <div class="col-md-4">
+                <button class="btn btn-success w-100" type="submit" {% if not metrics %}disabled{% endif %}>
+                  Run Prediction
+                </button>
+              </div>
+            </div>
+          </form>
+          {% if not metrics %}
+            <p class="text-muted mt-3">Train models first to enable predictions.</p>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </section>
+{% endblock %}

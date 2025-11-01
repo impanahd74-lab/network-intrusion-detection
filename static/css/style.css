@@ -1,0 +1,34 @@
+body {
+  background-color: #f7f9fc;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  color: #1f2933;
+}
+
+.navbar {
+  margin-bottom: 2rem;
+}
+
+main {
+  padding-bottom: 4rem;
+}
+
+.card {
+  box-shadow: 0 0.75rem 1.5rem rgba(31, 41, 51, 0.1);
+  border: none;
+}
+
+footer {
+  margin-top: 3rem;
+  text-align: center;
+  color: #6b7280;
+}
+
+.table thead {
+  background-color: #1f2933;
+  color: #ffffff;
+}
+
+.alert-info {
+  background-color: #d9eaf7;
+  color: #1f2933;
+}
