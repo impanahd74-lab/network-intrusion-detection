@@ -1,4 +1,4 @@
-# NIDS Flask Demo
+# Network Intrusion Detection System
 
 A lightweight Flask application that showcases a Network Intrusion Detection System (NIDS) workflow.
 It walks through uploading a labeled dataset, training multiple baseline classifiers, reviewing their
